@@ -1,43 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
-void main() {
+List<CameraDescription> cameras = [];
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(CameraApp());
+
+  // Retrieve the available cameras
+  cameras = await availableCameras();
+
+  runApp(const MyApp());
 }
 
-class CameraApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Camera App',
+      debugShowCheckedModeBanner: false,
+      title:'Camera App 3000',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
       ),
-      home: CameraScreen(),
+      home: const MyHomePage(),
     );
   }
 }
 
-class CameraScreen extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
   @override
-  _CameraScreenState createState() => _CameraScreenState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class _MyHomePageState extends State<MyHomePage> {
   late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  int _selectedCameraIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _initializeCamera();
-  }
 
-  Future<void> _initializeCamera() async {
-    final cameras = await availableCameras();
-    _controller = CameraController(cameras[0], ResolutionPreset.high);
-    _initializeControllerFuture = _controller.initialize();
+    // Initialize the camera controller
+    _controller = CameraController(
+      cameras[_selectedCameraIndex],
+      ResolutionPreset.medium,
+    );
+
+    _controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });
   }
 
   @override
@@ -47,21 +64,76 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Camera App'),
-      ),
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return CameraPreview(_controller);
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-    );
+Widget build(BuildContext context) {
+  if (!_controller.value.isInitialized) {
+    return Container();
   }
+
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Camera App 3000'),
+    ),
+    body: Container(
+      width: double.infinity,
+      height: double.infinity,
+      child: AspectRatio(
+        aspectRatio: _controller.value.aspectRatio,
+        child: CameraPreview(_controller),
+      ),
+    ),
+    floatingActionButton: Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 90,
+        width: 90,
+        margin: const EdgeInsets.only(bottom: 20),
+        child: FloatingActionButton.large(
+          backgroundColor: Colors.white,
+          child: const Icon(Icons.camera_alt, color: Colors.black),
+          onPressed: () {},
+        ),
+      ),
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    bottomNavigationBar: BottomAppBar(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+            icon: Icon(Icons.home),
+            onPressed: () {
+              // Handle home button press
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              // Handle search button press
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.camera_alt),
+            onPressed: () {
+              // Handle add button press
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {
+              // Handle favorite button press
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.account_circle),
+            onPressed: () {
+              // Handle account button press
+            },
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
 }
