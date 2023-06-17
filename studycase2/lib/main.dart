@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:path_provider/path_provider.dart'; // Add this import statement
 
 List<CameraDescription> cameras = [];
 
@@ -62,6 +64,23 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
+  Future<void> _takePicture() async {
+    final appDirectory =
+        await getApplicationDocumentsDirectory(); // Update this line
+    final pictureDirectory = '${appDirectory.path}/Pictures';
+    await Directory(pictureDirectory).create(recursive: true);
+    final currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+    final filePath = '$pictureDirectory/$currentTime.jpg';
+
+    try {
+      await _controller.takePicture();
+      // Do something with the captured picture (e.g., save it to Firebase or display it in another screen)
+      print('Picture saved at: $filePath');
+    } catch (e) {
+      print('Error occurred while taking a picture: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_controller.value.isInitialized) {
@@ -72,9 +91,31 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('Camera App'),
       ),
-      body: AspectRatio(
-        aspectRatio: _controller.value.aspectRatio,
-        child: CameraPreview(_controller),
+      body: Stack(
+        children: [
+          AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: CameraPreview(_controller),
+          ),
+          Positioned(
+            bottom: 4,
+            left: 4,
+            right: 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _takePicture,
+                  child: const Icon(Icons.camera),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
+                    shape: const CircleBorder(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
