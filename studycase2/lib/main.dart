@@ -20,9 +20,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Camera App',
+      debugShowCheckedModeBanner: false,
+      title:'Camera App 3000',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
       ),
       home: const MyHomePage(),
     );
@@ -82,41 +83,76 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (!_controller.value.isInitialized) {
-      return Container();
-    }
+Widget build(BuildContext context) {
+  if (!_controller.value.isInitialized) {
+    return Container();
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Camera App'),
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Camera App 3000'),
+    ),
+    body: Container(
+      width: double.infinity,
+      height: double.infinity,
+      child: AspectRatio(
+        aspectRatio: _controller.value.aspectRatio,
+        child: CameraPreview(_controller),
       ),
-      body: Stack(
+    ),
+    floatingActionButton: Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 90,
+        width: 90,
+        margin: const EdgeInsets.only(bottom: 20),
+        child: FloatingActionButton.large(
+          backgroundColor: Colors.white,
+          child: const Icon(Icons.camera_alt, color: Colors.black),
+          onPressed: () {},
+        ),
+      ),
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    bottomNavigationBar: BottomAppBar(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: CameraPreview(_controller),
+          IconButton(
+            icon: Icon(Icons.home),
+            onPressed: () {
+              // Handle home button press
+            },
           ),
-          Positioned(
-            bottom: 4,
-            left: 4,
-            right: 4,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: _takePicture,
-                  child: const Icon(Icons.camera),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(16),
-                    shape: const CircleBorder(),
-                  ),
-                ),
-              ],
-            ),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              // Handle search button press
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.camera_alt),
+            onPressed: () {
+              // Handle add button press
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {
+              // Handle favorite button press
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.account_circle),
+            onPressed: () {
+              // Handle account button press
+            },
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+
 }
