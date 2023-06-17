@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:studycase2/Screen/camera_screen.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Initialize the camera controller
     _controller = CameraController(
       cameras[_selectedCameraIndex],
-      ResolutionPreset.medium,
+      ResolutionPreset.veryHigh,
     );
 
     _controller.initialize().then((_) {
@@ -90,7 +91,20 @@ Widget build(BuildContext context) {
         child: FloatingActionButton.large(
           backgroundColor: Colors.white,
           child: const Icon(Icons.camera_alt, color: Colors.black),
-          onPressed: () {},
+          onPressed: () async{
+            try {
+              final image = await _controller.takePicture();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DisplayPictureScreen(imagePath: image.path,),
+                ),
+              );
+              if (!mounted) return;
+            } catch (e) {
+              print(e);
+            }
+          },
         ),
       ),
     ),
@@ -134,6 +148,5 @@ Widget build(BuildContext context) {
     ),
   );
 }
-
 
 }
