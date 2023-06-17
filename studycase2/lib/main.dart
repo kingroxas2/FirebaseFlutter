@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
-List<CameraDescription> cameras = [];
-
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Retrieve the available cameras
-  cameras = await availableCameras();
-
-  runApp(const MyApp());
+  runApp(CameraApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+class CameraApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,38 +14,30 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: CameraScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
+class CameraScreen extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _CameraScreenState createState() => _CameraScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _CameraScreenState extends State<CameraScreen> {
   late CameraController _controller;
-  int _selectedCameraIndex = 0;
+  late Future<void> _initializeControllerFuture;
 
   @override
   void initState() {
     super.initState();
+    _initializeCamera();
+  }
 
-    // Initialize the camera controller
-    _controller = CameraController(
-      cameras[_selectedCameraIndex],
-      ResolutionPreset.medium,
-    );
-
-    _controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    });
+  Future<void> _initializeCamera() async {
+    final cameras = await availableCameras();
+    _controller = CameraController(cameras[0], ResolutionPreset.high);
+    _initializeControllerFuture = _controller.initialize();
   }
 
   @override
@@ -64,17 +48,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_controller.value.isInitialized) {
-      return Container();
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Camera App'),
       ),
-      body: AspectRatio(
-        aspectRatio: _controller.value.aspectRatio,
-        child: CameraPreview(_controller),
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return CameraPreview(_controller);
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
