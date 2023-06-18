@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:studycase2/Screen/camera_screen.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -13,6 +15,21 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
+
+Future<String> saveImage(XFile imageFile) async {
+  final directory = await getExternalStorageDirectory();
+  final dcimDirectory = Directory('${directory!.path}/DCIM');
+  await dcimDirectory.create(recursive: true);
+
+  final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+  final filePath = '${dcimDirectory.path}/$fileName.png';
+
+  final File file = File(imageFile.path);
+  await file.copy(filePath);
+
+  return filePath;
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -22,7 +39,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title:'Camera App 3000',
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
+        primarySwatch: Colors.teal,
       ),
       home: const MyHomePage(),
     );
@@ -94,6 +111,8 @@ Widget build(BuildContext context) {
           onPressed: () async{
             try {
               final image = await _controller.takePicture();
+              await saveImage(image);
+              //ignore: use_build_context_synchronously
               Navigator.push(
                 context,
                 MaterialPageRoute(
