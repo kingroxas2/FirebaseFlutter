@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:path_provider/path_provider.dart'; // Add this import statement
 import 'package:path_provider/path_provider.dart';
 import 'package:studycase2/Screen/camera_screen.dart';
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title:'Camera App 3000',
+      title: 'Camera App 3000',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
@@ -40,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late CameraController _controller;
-  int _selectedCameraIndex = 0;
+  final int _selectedCameraIndex = 0;
 
   @override
   void initState() {
@@ -84,88 +85,89 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-Widget build(BuildContext context) {
-  if (!_controller.value.isInitialized) {
-    return Container();
-  }
+  Widget build(BuildContext context) {
+    if (!_controller.value.isInitialized) {
+      return Container();
+    }
 
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text('Camera App 3000'),
-    ),
-    body: Container(
-      width: double.infinity,
-      height: double.infinity,
-      child: AspectRatio(
-        aspectRatio: _controller.value.aspectRatio,
-        child: CameraPreview(_controller),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Camera App 3000'),
       ),
-    ),
-    floatingActionButton: Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        height: 90,
-        width: 90,
-        margin: const EdgeInsets.only(bottom: 20),
-        child: FloatingActionButton.large(
-          backgroundColor: Colors.white,
-          child: const Icon(Icons.camera_alt, color: Colors.black),
-          onPressed: () async{
-            try {
-              final image = await _controller.takePicture();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DisplayPictureScreen(imagePath: image.path,),
-                ),
-              );
-              if (!mounted) return;
-            } catch (e) {
-              print(e);
-            }
-          },
+      body: SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: AspectRatio(
+          aspectRatio: _controller.value.aspectRatio,
+          child: CameraPreview(_controller),
         ),
       ),
-    ),
-    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    bottomNavigationBar: BottomAppBar(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          IconButton(
-            icon: Icon(Icons.home),
-            onPressed: () {
-              // Handle home button press
+      floatingActionButton: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          height: 90,
+          width: 90,
+          margin: const EdgeInsets.only(bottom: 20),
+          child: FloatingActionButton.large(
+            backgroundColor: Colors.white,
+            child: const Icon(Icons.camera_alt, color: Colors.black),
+            onPressed: () async {
+              try {
+                final image = await _controller.takePicture();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DisplayPictureScreen(
+                      imagePath: image.path,
+                    ),
+                  ),
+                );
+                if (!mounted) return;
+              } catch (e) {
+                print(e);
+              }
             },
           ),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Handle search button press
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.camera_alt),
-            onPressed: () {
-              // Handle add button press
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.favorite),
-            onPressed: () {
-              // Handle favorite button press
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.account_circle),
-            onPressed: () {
-              // Handle account button press
-            },
-          ),
-        ],
+        ),
       ),
-    ),
-  );
-}
-
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.home),
+              onPressed: () {
+                // Handle home button press
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                // Handle search button press
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.camera_alt),
+              onPressed: () {
+                // Handle add button press
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.favorite),
+              onPressed: () {
+                // Handle favorite button press
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.account_circle),
+              onPressed: () {
+                // Handle account button press
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
