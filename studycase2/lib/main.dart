@@ -1,9 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:path_provider/path_provider.dart'; // Add this import statement
 import 'package:studycase2/Screen/camera.dart';
-import 'package:studycase2/Screen/camera_screen.dart';
 
 List<CameraDescription> cameras = [];
 
