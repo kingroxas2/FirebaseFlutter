@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart'; // Add this import statement
-import 'package:path_provider/path_provider.dart';
+import 'package:studycase2/Screen/camera.dart';
 import 'package:studycase2/Screen/camera_screen.dart';
 
 List<CameraDescription> cameras = [];
@@ -28,6 +28,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
       ),
       home: const MyHomePage(),
+      //routing to camera.dart
+      routes: {
+        '/camera': (context) => camera(
+              camera: cameras.first,
+            ),
+      },
     );
   }
 }
@@ -40,96 +46,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late CameraController _controller;
-  final int _selectedCameraIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Initialize the camera controller
-    _controller = CameraController(
-      cameras[_selectedCameraIndex],
-      ResolutionPreset.veryHigh,
-    );
-
-    _controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Future<void> _takePicture() async {
-    final appDirectory =
-        await getApplicationDocumentsDirectory(); // Update this line
-    final pictureDirectory = '${appDirectory.path}/Pictures';
-    await Directory(pictureDirectory).create(recursive: true);
-    final currentTime = DateTime.now().millisecondsSinceEpoch.toString();
-    final filePath = '$pictureDirectory/$currentTime.jpg';
-
-    try {
-      await _controller.takePicture();
-      // Do something with the captured picture (e.g., save it to Firebase or display it in another screen)
-      print('Picture saved at: $filePath');
-    } catch (e) {
-      print('Error occurred while taking a picture: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (!_controller.value.isInitialized) {
-      return Container();
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Camera App 3000'),
       ),
-      body: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: AspectRatio(
-          aspectRatio: _controller.value.aspectRatio,
-          child: CameraPreview(_controller),
-        ),
-      ),
-      floatingActionButton: Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          height: 90,
-          width: 90,
-          margin: const EdgeInsets.only(bottom: 20),
-          child: FloatingActionButton.large(
-            backgroundColor: Colors.white,
-            child: const Icon(Icons.camera_alt, color: Colors.black),
-            onPressed: () async {
-              try {
-                final image = await _controller.takePicture();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DisplayPictureScreen(
-                      imagePath: image.path,
-                    ),
-                  ),
-                );
-                if (!mounted) return;
-              } catch (e) {
-                print(e);
-              }
-            },
-          ),
-        ),
-      ),
+      body: Container(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -142,27 +65,17 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.search),
+              icon: const Icon(Icons.camera),
               onPressed: () {
-                // Handle search button press
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.camera_alt),
-              onPressed: () {
-                // Handle add button press
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.favorite),
-              onPressed: () {
-                // Handle favorite button press
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.account_circle),
-              onPressed: () {
-                // Handle account button press
+                // navigate to camera.dart when account_circle is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => camera(
+                      camera: cameras.first,
+                    ),
+                  ),
+                );
               },
             ),
           ],
