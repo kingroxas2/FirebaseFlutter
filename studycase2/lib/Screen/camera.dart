@@ -64,45 +64,58 @@ class _cameraState extends State<camera> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Camera App 3000'),
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: AspectRatio(
-          aspectRatio: _controller.value.aspectRatio,
-          child: CameraPreview(_controller),
-        ),
-      ),
-      floatingActionButton: Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          height: 90,
-          width: 90,
-          margin: const EdgeInsets.only(bottom: 20),
-          child: FloatingActionButton.large(
-            backgroundColor: Colors.white,
-            child: const Icon(Icons.camera_alt, color: Colors.black),
-            onPressed: () async {
-              try {
-                final image = await _controller.takePicture();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DisplayPictureScreen(
-                      imagePath: image.path,
-                    ),
-                  ),
-                );
-                if (!mounted) return;
-              } catch (e) {
-                print(e);
-              }
-            },
+    appBar: AppBar(
+      title: const Text('Camera App 3000'),
+    ),
+    body: Container(
+      width: double.infinity,
+      height: double.infinity,
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final aspectRatio = constraints.maxWidth / constraints.maxHeight;
+
+      return Stack(
+        children: [
+          Center(
+            child: AspectRatio(
+              aspectRatio: aspectRatio,
+              child: CameraPreview(_controller),
+            ),
           ),
-        ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 90,
+              width: 90,
+              margin: const EdgeInsets.only(bottom: 20),
+              child: FloatingActionButton.large(
+                backgroundColor: Colors.white,
+                child: const Icon(Icons.camera_alt, color: Colors.black),
+                onPressed: () async {
+                  try {
+                    final image = await _controller.takePicture();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DisplayPictureScreen(
+                          imagePath: image.path,
+                        ),
+                      ),
+                    );
+                    if (!mounted) return;
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
+      );
+        },
       ),
-    );
+    ),
+  );
+
   }
 }
