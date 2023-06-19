@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:path_provider/path_provider.dart'; // Add this import statement
 import 'package:studycase2/Screen/camera.dart';
-import 'package:studycase2/Screen/camera_screen.dart';
 
 List<CameraDescription> cameras = [];
+List<Widget> imageWidgets = []; // List to store image widgets
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +45,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // void _takePicture(BuildContext context, String imagePath) {
+  //   setState(() {
+  //     imageWidgets.add(Image.file(File(imagePath)));
+  //     if (imageWidgets.length > 10) {
+  //       imageWidgets.removeAt(0);
+  //     }
+  //   });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
