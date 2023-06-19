@@ -10,7 +10,7 @@ class DisplayPictureScreen extends StatelessWidget {
   Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(title: const Text('Picture Preview')),
-    body: SizedBox(
+    body: Container(
       width: 1080,
       height: 1920,
       child: GestureDetector(
