@@ -66,7 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('Camera App 3000'),
       ),
-      body: Container(),
+      body: Container(
+        child: Center(
+          child: Text('Images will display here'),
+        )
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: BottomAppBar(
         child: Row(
