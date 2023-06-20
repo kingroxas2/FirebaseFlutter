@@ -1,13 +1,16 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:studycase2/Screen/camera.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 List<CameraDescription> cameras = [];
 List<Widget> imageWidgets = []; // List to store image widgets
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Retrieve the available cameras
   cameras = await availableCameras();

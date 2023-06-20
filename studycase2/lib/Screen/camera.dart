@@ -67,7 +67,7 @@ class _cameraState extends State<camera> {
       appBar: AppBar(
         title: const Text('Camera App 3000'),
       ),
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         height: double.infinity,
         child: AspectRatio(
