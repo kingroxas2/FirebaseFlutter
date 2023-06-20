@@ -15,7 +15,6 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-
 Future<String> saveImage(XFile imageFile) async {
   final directory = await getExternalStorageDirectory();
   final dcimDirectory = Directory('${directory!.path}/DCIM');
@@ -67,10 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Camera App 3000'),
       ),
       body: Container(
-        child: Center(
-          child: Text('Images will display here'),
-        )
-      ),
+          child: Center(
+        child: Text('Images will display here'),
+      )),
       drawer: Drawer(
         child: ListView(
           children: [
