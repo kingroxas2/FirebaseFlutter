@@ -32,7 +32,7 @@ class DisplayPictureScreen extends StatelessWidget {
                   child: FloatingActionButton.large(
                     backgroundColor: Colors.white,
                     onPressed: () {
-                      uploadFile();//function untuk upload file lah kimak punya is
+                      uploadFile();
                     },
                     child: const Icon(Icons.upload, color: Colors.black),
                   )
