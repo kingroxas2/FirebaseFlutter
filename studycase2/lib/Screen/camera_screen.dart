@@ -6,6 +6,10 @@ class DisplayPictureScreen extends StatelessWidget {
 
   const DisplayPictureScreen({Key? key, required this.imagePath}) : super(key: key);
 
+  void uploadFile(){
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,15 +18,25 @@ class DisplayPictureScreen extends StatelessWidget {
         width: 1080,
         height: 1920,
         child: GestureDetector(
-          child: Column(
+          child: Stack(
             children: [
               Expanded(
                 child: Image.file(File(imagePath)),
               ),
               const SizedBox(height: 10),
-              Text(
-                'Image Path: $imagePath',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  alignment: Alignment.bottomCenter,
+                  child: FloatingActionButton.large(
+                    backgroundColor: Colors.white,
+                    onPressed: () {
+                      uploadFile();//function untuk upload file lah kimak punya is
+                    },
+                    child: const Icon(Icons.upload, color: Colors.black),
+                  )
+                )
               ),
             ],
           ),

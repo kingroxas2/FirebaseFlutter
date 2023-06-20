@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_storage: ^10.0.4
+  firebase_storage: ^11.2.3
   image_picker: ^0.8.4+2
   #firebase_core: ^1.6.0
 
@@ -41,6 +41,7 @@ dependencies:
   camera: ^0.10.5+2
   path_provider: ^2.0.15
   gallery_saver: ^2.3.2
+  firebase_core: ^2.14.0
 
 dev_dependencies:
   flutter_test:
