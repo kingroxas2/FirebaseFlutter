@@ -1,6 +1,6 @@
 <h1>INFO 4335 CASE STUDY 2</h1>
 
-<h2>Group Wahida: No 4. e-Wallet Management System </h2>
+<h2>Group Wahida: Camera Application</h2>
 
 Team Member:
 1. MUHAMMAD FIRDAUS BIN SHAHRUM 2013803
