@@ -276,10 +276,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: "216dbfb6609e46f78613b8913d046a162588ad4f34909ae7bf85e9f94ea6d922"
+      sha256: d2bab152deb2547ea6f53d82ebca9b7e77386bb706e5789e815d37e08ea475bb
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.7"
+    version: "0.8.7+3"
   image_picker_for_web:
     dependency: transitive
     description:
