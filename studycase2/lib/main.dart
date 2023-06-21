@@ -178,3 +178,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+// References
+// 1. Retrieve images from Firebase Storage: https://www.kindacode.com/article/flutter-firebase-storage/
+// 2. Connect to Firebase Storage: https://youtu.be/G-mbqiE87Lw
+// 3. Upload images to Firebase storage from a Flutter app, and display them on the UI : https://youtu.be/u52TWx41oU4
+// 4. Getting camera plugins: https://youtu.be/F1djGmAKvRo
