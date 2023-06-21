@@ -1,12 +1,14 @@
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:path_provider/path_provider.dart'; // Add this import statement
+import 'package:path_provider/path_provider.dart';
 import 'package:studycase2/Screen/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 List<CameraDescription> cameras = [];
+List<Widget> imageWidgets = []; // List to store image widgets
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +18,6 @@ Future<void> main() async {
 
   runApp(const MyApp());
 }
-
 
 Future<String> saveImage(XFile imageFile) async {
   final directory = await getExternalStorageDirectory();
@@ -62,16 +63,47 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  FirebaseStorage storage = FirebaseStorage.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImages();
+  }
+
+  // Retriew the uploaded images
+  // This function is called when the app launches for the first time or when an image is uploaded or deleted
+  Future<void> _loadImages() async {
+    final ListResult result = await storage.ref().child('images').listAll();
+    final List<Reference> allFiles = result.items;
+
+    List<Widget> widgets = [];
+
+    for (final file in allFiles) {
+      final String fileUrl = await file.getDownloadURL();
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            child: Image.network(fileUrl),
+          ),
+        ),
+      );
+    }
+
+    setState(() {
+      imageWidgets = widgets;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Camera App 3000'),
       ),
-      body: Container(
-        child: Center(
-          child: Text('Images will display here'),
-        )
+      body: ListView(
+        children: imageWidgets,
       ),
       drawer: Drawer(
         child: ListView(
@@ -102,7 +134,6 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: const Icon(Icons.camera),
               title: const Text('Camera'),
               onTap: () {
-                // navigate to camera.dart when account_circle is pressed
                 Navigator.push(
                   context,
                   MaterialPageRoute(
