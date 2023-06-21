@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';
@@ -54,7 +55,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
@@ -63,6 +63,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  FirebaseStorage storage = FirebaseStorage.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImages();
+  }
+
+  // Retriew the uploaded images
+  // This function is called when the app launches for the first time or when an image is uploaded or deleted
+  Future<void> _loadImages() async {
+    final ListResult result = await storage.ref().child('images').listAll();
+    final List<Reference> allFiles = result.items;
+
+    List<Widget> widgets = [];
+
+    for (final file in allFiles) {
+      final String fileUrl = await file.getDownloadURL();
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            child: Image.network(fileUrl),
+          ),
+        ),
+      );
+    }
+
+    setState(() {
+      imageWidgets = widgets;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +102,9 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('Camera App 3000'),
       ),
-      body: Container(
-          child: const Center(
-        child: Text('Images will display here'),
-      )),
+      body: ListView(
+        children: imageWidgets,
+      ),
       drawer: Drawer(
         child: ListView(
           children: [
