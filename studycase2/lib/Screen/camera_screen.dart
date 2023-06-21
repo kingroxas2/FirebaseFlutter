@@ -53,6 +53,7 @@ class DisplayPictureScreen extends StatelessWidget {
                         backgroundColor: Colors.white,
                         onPressed: () async {
                           uploadFile();
+                          Navigator.pop(context);
                         },
                         child: const Icon(Icons.upload, color: Colors.black),
                       ))),
