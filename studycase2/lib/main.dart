@@ -71,30 +71,81 @@ class _MyHomePageState extends State<MyHomePage> {
     _loadImages();
   }
 
-  // Retriew the uploaded images
+  // Retriev3 the uploaded images
   // This function is called when the app launches for the first time or when an image is uploaded or deleted
-  Future<void> _loadImages() async {
-    final ListResult result = await storage.ref().child('images').listAll();
-    final List<Reference> allFiles = result.items;
+Future<void> _loadImages() async {
+  final ListResult result = await storage.ref().child('images').listAll();
+  final List<Reference> allFiles = result.items;
 
-    List<Widget> widgets = [];
 
-    for (final file in allFiles) {
-      final String fileUrl = await file.getDownloadURL();
-      widgets.add(
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            child: Image.network(fileUrl),
-          ),
+
+  List<Widget> widgets = [];
+
+ // Create a Map to store the association between Image widgets and their paths
+final Map<Image, String> imagePaths = {};
+
+for (final file in allFiles) {
+  final String fileUrl = await file.getDownloadURL();
+  final String fileName = file.name;
+  final String filePath = 'images/$fileName';
+
+  // Create Image widget
+  final image = Image.network(fileUrl);
+
+  // Associate Image widget with its path in Firebase Storage
+  imagePaths[image] = filePath;
+
+  widgets.add(
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        child: InkWell(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("Delete Image"),
+                  content: const Text("Are you sure you want to delete this image?"),
+                  actions: [
+                    TextButton(
+                      child: const Text("Cancel"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    TextButton(
+                      child: const Text("Delete"),
+                      onPressed: () async {
+                        // Get path to image in Firebase Storage
+                        final imagePath = imagePaths[image];
+
+                        // Delete image from storage
+                        FirebaseStorage.instance
+                            .ref()
+                            .child(imagePath!)
+                            .delete()
+                            .then((_) => print('Successfully deleted image from storage'))
+                            .catchError((error) => print('Failed to delete image from storage: $error'));
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          child: image,
         ),
-      );
-    }
+      ),
+    ),
+  );
+}
 
-    setState(() {
-      imageWidgets = widgets;
-    });
-  }
+  setState(() {
+    imageWidgets = widgets;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
