@@ -66,7 +66,12 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
               child: Image.file(File(widget.imagePath)),
             ),
             const SizedBox(height: 10),
-            LinearProgressIndicator(value: _progress),
+            Visibility(
+            visible: _uploadTask != null, //if uploadTask is not null show the progress indicator
+            child:LinearProgressIndicator(
+              value: _progress,
+              minHeight: 20), 
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
