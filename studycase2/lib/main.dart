@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:studycase2/Screen/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -52,6 +54,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
@@ -60,13 +63,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // void _takePicture(BuildContext context, String imagePath) {
-  //   setState(() {
-  //     imageWidgets.add(Image.file(File(imagePath)));
-  //     if (imageWidgets.length > 10) {
-  //       imageWidgets.removeAt(0);
-  //     }
-  //   });
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Camera App 3000'),
       ),
       body: Container(
-          child: Center(
+          child: const Center(
         child: Text('Images will display here'),
       )),
       drawer: Drawer(
@@ -107,7 +103,6 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: const Icon(Icons.camera),
               title: const Text('Camera'),
               onTap: () {
-                // navigate to camera.dart when account_circle is pressed
                 Navigator.push(
                   context,
                   MaterialPageRoute(
