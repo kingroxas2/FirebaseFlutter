@@ -100,7 +100,7 @@ for (final file in allFiles) {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         child: InkWell(
-          onTap: () {
+          onLongPress: () {
             showDialog(
               context: context,
               builder: (BuildContext context) {
