@@ -68,84 +68,93 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _loadImages();
+    _refreshImages();
+    //_loadImages();
   }
 
   // Retriev3 the uploaded images
   // This function is called when the app launches for the first time or when an image is uploaded or deleted
-Future<void> _loadImages() async {
-  final ListResult result = await storage.ref().child('images').listAll();
-  final List<Reference> allFiles = result.items;
+  Future<void> _loadImages() async {
+    final ListResult result = await storage.ref().child('images').listAll();
+    final List<Reference> allFiles = result.items;
 
+    List<Widget> widgets = [];
 
+    // Create a Map to store the association between Image widgets and their paths
+    final Map<Image, String> imagePaths = {};
 
-  List<Widget> widgets = [];
+    for (final file in allFiles) {
+      final String fileUrl = await file.getDownloadURL();
+      final String fileName = file.name;
+      final String filePath = 'images/$fileName';
 
- // Create a Map to store the association between Image widgets and their paths
-final Map<Image, String> imagePaths = {};
+      // Create Image widget
+      final image = Image.network(fileUrl);
 
-for (final file in allFiles) {
-  final String fileUrl = await file.getDownloadURL();
-  final String fileName = file.name;
-  final String filePath = 'images/$fileName';
+      // Associate Image widget with its path in Firebase Storage
+      imagePaths[image] = filePath;
 
-  // Create Image widget
-  final image = Image.network(fileUrl);
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            child: InkWell(
+              onLongPress: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Delete Image"),
+                      content: const Text(
+                          "Are you sure you want to delete this image?"),
+                      actions: [
+                        TextButton(
+                          child: const Text("Cancel"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        TextButton(
+                          child: const Text("Delete"),
+                          onPressed: () async {
+                            // Get path to image in Firebase Storage
+                            final imagePath = imagePaths[image];
 
-  // Associate Image widget with its path in Firebase Storage
-  imagePaths[image] = filePath;
-
-  widgets.add(
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        child: InkWell(
-          onLongPress: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Delete Image"),
-                  content: const Text("Are you sure you want to delete this image?"),
-                  actions: [
-                    TextButton(
-                      child: const Text("Cancel"),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    TextButton(
-                      child: const Text("Delete"),
-                      onPressed: () async {
-                        // Get path to image in Firebase Storage
-                        final imagePath = imagePaths[image];
-
-                        // Delete image from storage
-                        FirebaseStorage.instance
-                            .ref()
-                            .child(imagePath!)
-                            .delete()
-                            .then((_) => print('Successfully deleted image from storage'))
-                            .catchError((error) => print('Failed to delete image from storage: $error'));
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
+                            // Delete image from storage
+                            FirebaseStorage.instance
+                                .ref()
+                                .child(imagePath!)
+                                .delete()
+                                .then((_) => print(
+                                    'Successfully deleted image from storage'))
+                                .catchError((error) => print(
+                                    'Failed to delete image from storage: $error'));
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
-            );
-          },
-          child: image,
+              child: image,
+            ),
+          ),
         ),
-      ),
-    ),
-  );
-}
+      );
+    }
 
-  setState(() {
-    imageWidgets = widgets;
-  });
-}
+    setState(() {
+      imageWidgets = widgets;
+    });
+  }
+
+  Future<void> _refreshImages() async {
+    setState(() {
+      imageWidgets = [];
+    });
+    await _loadImages();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,49 +162,10 @@ for (final file in allFiles) {
       appBar: AppBar(
         title: const Text('Camera App 3000'),
       ),
-      body: ListView(
-        children: imageWidgets,
-      ),
-      drawer: Drawer(
+      body: RefreshIndicator(
+        onRefresh: _refreshImages,
         child: ListView(
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.teal,
-              ),
-              child: Text(
-                'Camera App 3000',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.camera),
-              title: const Text('Camera'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => camera(
-                      camera: cameras.first,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
+          children: imageWidgets,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

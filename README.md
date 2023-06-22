@@ -1,12 +1,11 @@
 <h1>INFO 4335 CASE STUDY 2</h1>
 
-<h2>Group Wahida: No 4. e-Wallet Management System </h2>
+<h2>Group Wahida: Camera Application</h2>
 
 Team Member:
 1. MUHAMMAD FIRDAUS BIN SHAHRUM 2013803
 2. MUHAMMAD AMIR HAMZAH BIN ABD AZIZ 2011685
 3. FAISHAL AQIL BIN MOHD ARIEF 2014883
-4. MUHAMMAD ISKANDAR ZULQARNAIN BIN MOHD ABDULLAH 2029879
 
 Contributions:
 1. Setup packages and plugins - Firdaus, Amir, Faishal
